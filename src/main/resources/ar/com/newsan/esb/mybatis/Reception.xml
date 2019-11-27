@@ -1,0 +1,100 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reception">
+
+    <!--Result Data Sets-->
+
+    <!--DB Querys-->
+
+    <insert id="insertHeader" parameterType="hashmap">
+        INSERT INTO RCV_HEADERS_INTERFACE(
+            HEADER_INTERFACE_ID, GROUP_ID, PROCESSING_STATUS_CODE, RECEIPT_SOURCE_CODE, TRANSACTION_TYPE,
+            CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY,
+            VENDOR_ID)
+        VALUES (
+            #{headerInterface}, #{groupId}, 'PENDING', 'VENDOR', 'NEW',
+            SYSDATE, #{reception.createdBy}, SYSDATE, #{reception.lastUpdatedBy},
+            (SELECT VENDOR_ID FROM PO_VENDORS WHERE SEGMENT1 = #{reception.vendor}))
+    </insert>
+
+    <insert id="insertTransaction" parameterType="hashmap">
+        INSERT INTO RCV_TRANSACTIONS_INTERFACE(
+            HEADER_INTERFACE_ID, INTERFACE_TRANSACTION_ID, GROUP_ID,
+            CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY,
+            TRANSACTION_TYPE, TRANSACTION_DATE, PROCESSING_STATUS_CODE, PROCESSING_MODE_CODE, TRANSACTION_STATUS_CODE,
+            PO_HEADER_ID, PO_LINE_ID,
+            ITEM_ID, PO_LINE_LOCATION_ID,
+            QUANTITY, UNIT_OF_MEASURE, TO_ORGANIZATION_ID, VALIDATION_FLAG,
+            AUTO_TRANSACT_CODE, RECEIPT_SOURCE_CODE, SOURCE_DOCUMENT_CODE, DESTINATION_TYPE_CODE,
+            CURRENCY_CODE, CURRENCY_CONVERSION_DATE, CURRENCY_CONVERSION_RATE, CURRENCY_CONVERSION_TYPE)
+        VALUES (
+            #{headerInterface}, #{transactionInterface}, #{groupId},
+            SYSDATE, #{reception.createdBy}, SYSDATE, #{reception.lastUpdatedBy},
+            'RECEIVE', SYSDATE, 'PENDING', #{transaction.processingMode}, 'PENDING',
+            #{poHeader}, #{poLine},
+            #{poItem}, #{poLineLocation},
+            #{transaction.quantity}, #{transaction.uom}, #{poOrg}, 'Y',
+            'DELIVER', 'VENDOR', 'PO', 'EXPENSE',
+            #{poCurrency},
+            <choose>
+                <when test="poCurrency == 'ARS'"> NULL, 1, NULL</when>
+                <otherwise> TRUNC(SYSDATE), NULL, 'Corporate'</otherwise>
+            </choose>
+            )
+    </insert>
+
+    <select id="fireTransactionProcessor" parameterType="POReception" statementType="CALLABLE">
+        {call apps.XX_RCV_FUSE_SF_PKG.MAIN
+        (pi_foreign_source      => 'XX_RESP_USR_APIS',
+         pi_group_id            => #{groupId, mode=IN, jdbcType=NUMERIC},
+         po_receipt_header_id   => #{receiptHeader, mode=OUT, jdbcType=NUMERIC},
+         po_receipt_number      => #{receiptNumber, mode=OUT, jdbcType=VARCHAR},
+         po_return_status       => #{status, mode=OUT, jdbcType=VARCHAR})}
+    </select>
+
+    <select id="lookupErrors" parameterType="bigdecimal" resultType="string">
+        SELECT LISTAGG(CONCAT(CONCAT(ERROR_MESSAGE,' in table '),TABLE_NAME),' | ') WITHIN GROUP (ORDER BY ERROR_MESSAGE)
+        FROM PO_INTERFACE_ERRORS WHERE BATCH_ID = #{groupId}
+        GROUP BY TABLE_NAME
+    </select>
+
+    <!--Parametrized Sequence Identifier-->
+
+    <select id="sequenceId" parameterType="string" resultType="bigdecimal">
+        SELECT ${value}.NEXTVAL FROM dual
+    </select>
+
+    <!--Purchase Order Data from EBS-->
+
+    <select id="getHeaderData" resultType="hashmap" parameterType="ReceptionTransaction">
+        SELECT PO_HEADER_ID as id, CURRENCY_CODE as currency
+        FROM PO_HEADERS_ALL
+        WHERE SEGMENT1 = #{purchaseOrder}
+        AND ORG_ID = (SELECT ORGANIZATION_ID FROM HR_OPERATING_UNITS WHERE NAME = #{company})
+    </select>
+
+    <select id="getItemId" resultType="long" parameterType="ReceptionTransaction">
+        SELECT INVENTORY_ITEM_ID
+        FROM XX_MTL_SYSTEM_ITEMS_PV_V
+        WHERE SEGMENT1 = #{sku}
+        AND ORGANIZATION_CODE = 'MAS'
+    </select>
+
+    <select id="getLineId" resultType="long" parameterType="hashmap">
+        SELECT PO_LINE_ID
+        FROM PO_LINES_ALL
+        WHERE PO_HEADER_ID = #{poHeader}
+        AND ITEM_ID = #{poItem}
+    </select>
+
+    <select id="getLineLocationData" resultType="hashmap" parameterType="hashmap">
+        SELECT LINE_LOCATION_ID as location, SHIP_TO_ORGANIZATION_ID as org
+        FROM PO_LINE_LOCATIONS_ALL
+        WHERE PO_HEADER_ID = #{poHeader}
+        AND PO_LINE_ID = #{poLine}
+        AND NVL(CLOSED_CODE, 'OPEN') = 'OPEN'
+    </select>
+
+</mapper>

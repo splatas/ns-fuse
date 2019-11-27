@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="karaf-openshift"
+	xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
+	<feature name='karaf-openshift' version='${project.version}'>
+		<feature version="${camel.version}">camel-core</feature>
+		<feature version="${camel.version}">camel-blueprint</feature>
+		<feature version="${camel.version}">camel-test-blueprint</feature>
+		<feature version="${camel.version}">camel-cxf</feature>
+		<feature version="${camel.version}">camel-bean-validator</feature>
+		<feature version="${camel.version}">camel-jackson</feature>
+		<feature version="${camel.version}">camel-mybatis</feature>
+		<feature version="${camel.version}">camel-sql</feature>
+		<feature version="${camel.version}">camel-jasypt</feature>
+		<feature version="${camel.version}">jasypt-encryption</feature>
+		<feature>resteasy</feature>
+		<bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
+      	<bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
+		<bundle>mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
+	</feature>
+</features>

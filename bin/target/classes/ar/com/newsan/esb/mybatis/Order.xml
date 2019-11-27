@@ -1,0 +1,209 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Order">
+
+    <!--DB Querys-->
+
+    <select id="createOrder" parameterType="hashmap" statementType="CALLABLE">
+
+        <include refid="initVariables" />
+
+        BEGIN
+
+            l_foreign_source := 'PEDIDOS/SF';
+
+            -- Header Record --
+
+            l_header_rec.PARTY_SITE_USE_ID_BILL  := #{custBillTo};
+            l_header_rec.PARTY_SITE_USE_ID_SHIP  := #{custShipTo};
+            l_header_rec.ORDER_TYPE_NAME         := #{in_header.typeName};
+            l_header_rec.PRICE_LIST_NAME         := #{in_header.priceListName};
+            l_header_rec.SALESREP_NUMBER         := #{in_header.salesRep};
+            l_header_rec.ORGANIZATION_CODE       := #{in_header.organizationCode};
+            l_header_rec.ACCOUNT_NUMBER          := #{in_header.clientAccount};
+            l_header_rec.BOOKED_FLAG             := #{in_header.bookedFlag};
+            l_header_rec.PRICING_DATE            := SYSDATE;
+            l_header_rec.TRANSACTIONAL_CURR_CODE := #{in_header.currencyCode};
+            l_header_rec.OPERATION               := 'CREATE';
+            l_header_rec.FLOW_STATUS_CODE        := #{in_header.flowStatusCode};
+            l_header_rec.ORDER_SOURCE_ID         := #{in_header.source};
+            l_header_rec.GLOBAL_ATTRIBUTE16      := #{in_header.ocExpirationDate};
+            l_header_rec.PAYMENT_TERM_ID         := #{in_header.paymentTerm};
+            l_header_rec.SHIPPING_INSTRUCTIONS   := #{in_header.shippingInstructions};
+            l_header_rec.ORIG_SYS_DOCUMENT_REF   := #{in_header.orderMIB};
+            l_header_rec.SHIP_FROM_ORG           := #{in_header.shipFrom};
+
+            <foreach collection="in_lines" item="line">
+
+                l_line_rec.OPERATION            := 'CREATE';
+                l_line_rec.CALCULATE_PRICE_FLAG := #{line.calculatePriceFlag};
+                l_line_rec.SEGMENT1             := #{line.sku};
+                l_line_rec.ORDERED_QUANTITY     := #{line.ordered};
+                l_line_rec.UNIT_SELLING_PRICE   := #{line.unitPrice};
+                l_line_rec.UNIT_LIST_PRICE      := #{line.unitListPrice};
+                l_line_rec.SCHEDULE_SHIP_DATE   := TO_DATE(#{line.scheduleShipDate}, 'YYYY-MM-DD');
+                l_line_rec.CUST_PO_NUMBER       := #{line.customerPO};
+                l_line_rec.PACKING_INSTRUCTIONS := #{line.packingInstructions};
+                l_line_rec.PAYMENT_TERM_ID      := #{line.paymentTerm};
+                l_line_rec.SHIPPING_METHOD_CODE := #{line.shippingMethodCode};
+                l_line_rec.ORIG_SYS_DOCUMENT_REF:= #{in_header.orderMIB};
+                l_line_rec.ORIG_SYS_LINE_REF    := #{line.lineMIB};
+                l_line_rec.RETURN_REASON_CODE	:= #{line.reasonCode};
+                l_line_rec.ATTRIBUTE16          := #{line.context};
+                l_line_rec.CONTEXT              := #{line.relatedTo};
+                l_line_rec.PRICE_LIST_NAME      := #{line.priceListName};
+                l_line_rec.LINE_TYPE_NAME       := #{line.type};
+
+                l_line_tbl.EXTEND;
+                l_line_tbl(l_line_tbl.COUNT)    := l_line_rec;
+
+            </foreach>
+
+            l_action_request_rec.ENTITY_CODE  := 'HEADER';
+            l_action_request_rec.REQUEST_TYPE := 'BOOK_ORDER';
+
+            l_action_request_tbl.EXTEND;
+            l_action_request_tbl(l_action_request_tbl.COUNT):= l_action_request_rec;
+
+            XX_OE_ORDER_PUB.PROCESS_ORDER(
+                    p_foreign_source        =>	l_foreign_source,
+                    p_org_id	            =>	l_org_id,
+                    p_operating_unit        =>	l_operating_unit,
+                    p_api_version_number	=>	1.0,
+                    p_init_msg_list         =>	l_init_msg_list,
+                    p_return_values         =>	l_return_values,
+                    p_action_commit         =>	l_action_commit,
+                    x_return_status         =>	#{out_status, mode=OUT, jdbcType=VARCHAR},
+                    x_msg_count             =>	#{out_msg_count, mode=OUT, jdbcType=NUMERIC},
+                    x_msg_data              =>	#{out_msg_data, mode=OUT, jdbcType=VARCHAR},
+                    p_header_rec            =>	l_header_rec,
+                    p_line_tbl              =>	l_line_tbl,
+                    p_action_request_tbl    =>	l_action_request_tbl,
+                    x_header_rec            =>	#{out_header, mode=INOUT, jdbcType=STRUCT, jdbcTypeName=XX_HEADER_REC_TYPE, typeHandler=ar.com.newsan.esb.mybatis.handlers.OrderHeaderOutTypeHandler},
+                    x_header_val_rec	    =>	lx_header_val_rec,
+                    x_header_adj_tbl	    =>	lx_header_adj_tbl,
+                    x_header_adj_val_tbl	=>	lx_header_adj_val_tbl,
+                    x_header_price_att_tbl	=>	lx_header_price_att_tbl,
+                    x_header_adj_att_tbl	=>	lx_header_adj_att_tbl,
+                    x_header_adj_assoc_tbl	=>	lx_header_adj_assoc_tbl,
+                    x_header_scredit_tbl	=>	lx_header_scredit_tbl,
+                    x_header_scredit_val_tbl =>	lx_header_scredit_val_tbl,
+                    x_line_tbl              =>	#{out_lines, mode=INOUT, jdbcType=ARRAY, jdbcTypeName=XX_LINE_TBL_TYPE, typeHandler=ar.com.newsan.esb.mybatis.handlers.OrderLineOutTypeHandler},
+                    x_line_val_tbl	        =>	lx_line_val_tbl,
+                    x_line_adj_tbl	        =>	lx_line_adj_tbl,
+                    x_line_adj_val_tbl	    =>	lx_line_adj_val_tbl,
+                    x_line_price_att_tbl	=>	lx_line_price_att_tbl,
+                    x_line_adj_att_tbl	    =>	lx_line_adj_att_tbl,
+                    x_line_adj_assoc_tbl	=>	lx_line_adj_assoc_tbl,
+                    x_line_scredit_tbl	    =>	lx_line_scredit_tbl,
+                    x_line_scredit_val_tbl	=>	lx_line_scredit_val_tbl,
+                    x_lot_serial_tbl	    =>	lx_lot_serial_tbl,
+                    x_lot_serial_val_tbl	=>	lx_lot_serial_val_tbl,
+                    x_action_request_tbl	=>	lx_action_request_tbl,
+                    p_rtrim_data            =>	l_rtrim_data,
+                    p_validate_desc_flex    =>	l_validate_desc_flex
+            );
+        END;
+    </select>
+
+    <select id="getCustomerSiteId" parameterType="string" resultType="integer">
+        SELECT b.PARTY_SITE_USE_ID
+        FROM HZ_CUST_ACCT_SITES_ALL a, XX_AR_CUSTOMER_ADDRESS_V b
+        WHERE a.PARTY_SITE_ID = b.PARTY_SITE_ID
+        AND b.ACCOUNT_STATUS = 'A'
+        AND b.PARTY_SITE_STATUS = 'A'
+        AND a.ORIG_SYSTEM_REFERENCE = #{value}
+    </select>
+
+    <select id="getOrder" parameterType="hashmap" resultType="ViewOrder">
+        SELECT ORDER_NUMBER as id,
+               ORDER_TYPE as type,
+               ORDER_TYPE_DESCRIPTION as description,
+               HEADER_ID as internalId,
+               OPERATING_UNIT as operatingUnit,
+               OPERATING_UNIT_ID as operatingUnitId,
+               SHIP_FROM_ORG as shipFromOrg,
+               SHIP_FROM_ORG_ID as shipFromOrgId,
+               FLOW_STATUS_CODE as status,
+               SALESREP_ID as sellerId,
+               ACCOUNT_NUMBER as account,
+               ACCOUNT_NAME as accountName,
+               TRANSACTIONAL_CURR_CODE as currency,
+               LAST_UPDATE_DATE as lastUpdate
+        FROM XX_OM_ORDER_HEADERS_V
+        WHERE ORDER_NUMBER = #{id}
+        AND ORDER_TYPE = #{type}
+        AND OPERATING_UNIT = #{unit}
+    </select>
+
+    <select id="getOrderLines" parameterType="ViewOrder" resultType="ViewOrderLine">
+        SELECT LINE_NUMBER as line,
+        SHIP_FROM_ORG as shipFromOrg,
+        SHIP_FROM_ORG_ID as shipFromOrgId,
+        FLOW_STATUS_CODE as lineStatus,
+        SEGMENT1 as itemCode,
+        DESCRIPTION as itemDesc,
+        ORDERED_QUANTITY as orderedQuantity,
+        ORDER_QUANTITY_UOM as uom,
+        PRICING_QUANTITY as pricingQuantity,
+        UNIT_SELLING_PRICE as unitPrice,
+        PRECIO_TOTAL as totalPrice,
+        SCHEDULE_SHIP_DATE as scheduleShipDate,
+        LINE_TYPE as type,
+        LINE_TYPE_DESCRIPTION as typeDescription,
+        LINE_CATEGORY_CODE as categoryCode,
+        LAST_UPDATE_DATE as lineLastUpdate
+        FROM XX_OM_ORDER_LINES_V
+        WHERE ORDER_NUMBER = #{id}
+        AND HEADER_ID = #{internalId}
+    </select>
+
+    <!-- Utils: Create order variables initialization -->
+
+    <sql id="initVariables">
+        DECLARE
+
+        l_foreign_source                 VARCHAR2(15);
+        l_org_id                         NUMBER;
+        l_operating_unit                 VARCHAR2(100) ;
+        l_api_version_number             NUMBER;
+        l_init_msg_list                  VARCHAR2(1) := 'F';
+        l_return_values                  VARCHAR2(1) := 'T';
+        l_action_commit                  VARCHAR2(1) := 'F';
+        lx_return_status                 VARCHAR2(4000);
+        lx_msg_count                     NUMBER;
+        lx_msg_data                      VARCHAR2(4000);
+        l_header_rec                     XX_HEADER_REC_TYPE              := XX_OE_ORDER_PUB.XX_G_MISS_HEADER_REC;
+        l_line_tbl                       XX_LINE_TBL_TYPE                := XX_LINE_TBL_TYPE();
+        l_line_rec                       XX_LINE_REC_TYPE                := XX_OE_ORDER_PUB.XX_G_MISS_LINE_REC;
+        l_action_request_tbl	         XX_REQUEST_TBL_TYPE             := XX_REQUEST_TBL_TYPE();
+        l_action_request_rec	         XX_REQUEST_REC_TYPE             := XX_OE_ORDER_PUB.XX_G_MISS_REQUEST_REC_TYPE;
+        l_rtrim_data                     VARCHAR2(1) :='N';
+        l_validate_desc_flex             VARCHAR2(1) :='Y';
+
+        lx_header_rec                    XX_HEADER_REC_TYPE             := XX_OE_ORDER_PUB.XX_G_MISS_HEADER_REC;
+        lx_header_val_rec                xx_header_val_rec_type         := xx_oe_order_pub.xx_g_miss_header_val_rec;
+        lx_header_adj_tbl                xx_header_adj_tbl_type         := xx_header_adj_tbl_type();
+        lx_header_adj_val_tbl            xx_header_adj_val_tbl_type     := xx_header_adj_val_tbl_type();
+        lx_header_price_att_tbl          xx_header_price_att_tbl_type   := xx_header_price_att_tbl_type();
+        lx_header_adj_att_tbl            xx_header_adj_att_tbl_type     := xx_header_adj_att_tbl_type();
+        lx_header_adj_assoc_tbl          xx_header_adj_assoc_tbl_type   := xx_header_adj_assoc_tbl_type();
+        lx_header_scredit_tbl            xx_header_scredit_tbl_type     := xx_header_scredit_tbl_type();
+        lx_header_scredit_val_tbl        xx_header_scredit_val_tbl_type := xx_header_scredit_val_tbl_type();
+        lx_line_tbl                      XX_LINE_TBL_TYPE               := XX_LINE_TBL_TYPE();
+        lx_line_val_tbl                  xx_line_val_tbl_type           := xx_line_val_tbl_type();
+        lx_line_adj_tbl                  xx_line_adj_tbl_type           := xx_line_adj_tbl_type();
+        lx_line_adj_val_tbl              xx_line_adj_val_tbl_type       := xx_line_adj_val_tbl_type();
+        lx_line_price_att_tbl            xx_line_price_att_tbl_type     := xx_line_price_att_tbl_type();
+        lx_line_adj_att_tbl              xx_line_adj_att_tbl_type       := xx_line_adj_att_tbl_type();
+        lx_line_adj_assoc_tbl            xx_line_adj_assoc_tbl_type     := xx_line_adj_assoc_tbl_type();
+        lx_line_scredit_tbl              xx_line_scredit_tbl_type       := xx_line_scredit_tbl_type();
+        lx_line_scredit_val_tbl          xx_line_scredit_val_tbl_type   := xx_line_scredit_val_tbl_type();
+        lx_lot_serial_tbl                xx_lot_serial_tbl_type         := xx_lot_serial_tbl_type();
+        lx_lot_serial_val_tbl            xx_lot_serial_val_tbl_type     := xx_lot_serial_val_tbl_type();
+        lx_action_request_tbl	          xx_request_tbl_type            := xx_request_tbl_type();
+    </sql>
+
+</mapper>

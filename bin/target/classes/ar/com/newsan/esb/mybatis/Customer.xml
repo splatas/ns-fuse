@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Customer">
+
+    <!--Result Data Sets-->
+
+    <resultMap id="ebsCustomer" type="Customer">
+        <result column="ACCOUNT_NUMBER" property="accountNum"/>
+        <result column="PARTY_NAME" property="accountName"/>
+        <result column="XX_AR_RAMO_CODIGO_DESC" property="description"/>
+        <result column="XX_AR_RAMO_CODIGO" property="descriptionCode"/>
+        <result column="SALES_CHANNEL_MEANING" property="salesChannel"/>
+        <result column="SALES_CHANNEL_CODE" property="salesChannelCode"/>
+        <result column="CUSTOMER_CLASS_MEANING" property="classDesc"/>
+        <result column="CUSTOMER_CLASS_CODE" property="classCode"/>
+        <result column="CUIT" property="fiscalCode"/>
+        <result column="PHONE_AREA_NUMBER" property="phoneArea"/>
+        <result column="PHONE_NUMBER" property="phone"/>
+        <result column="EMAIL_ADDRESS" property="mail"/>
+        <result column="POSTAL_CODE" property="postalCode"/>
+        <result column="ADDRESS1" property="address"/>
+        <result column="ALTURA" property="addressNum"/>
+        <result column="CITY" property="city"/>
+        <result column="PROVINCE" property="provinceCode"/>
+        <result column="GEOGRAPHY_NAME" property="province"/>
+        <result column="ACCOUNT_STATUS" property="status"/>
+        <result column="OPERATING_UNIT" property="organizationName"/>
+        <result column="OPERATING_UNIT_ID" property="idOrganization"/>
+        <result column="PARTY_SITE_USE_ID" property="idSiteUse"/>
+        <result column="SITE_USE_TYPE" property="siteUse"/>
+        <result column="PARTY_SITE_STATUS" property="siteStatus"/>
+        <result column="PARTY_SITE_ID" property="idSite"/>
+        <result column="CONTRIBUTOR_CLASS" property="contributorClass"/>
+        <result column="CUST_ACCT_SITE_ID" property="idSiteAcct"/>
+        <result column="CON_TAX_ATTRIBUTE_VALUE" property="conTaxAttrValue"/>
+        <result column="DOCUMENT_LETTER" property="docLetter"/>
+        <result column="LAST_UPDATE_DATE" property="lastUpdate"/>
+    </resultMap>
+
+    <!--DB Querys-->
+
+    <select id="listCustomers" resultMap="ebsCustomer">
+        SELECT * FROM XX_AR_CUSTOMER_ADDRESS_V
+        WHERE LAST_UPDATE_DATE &gt;= TO_DATE(#{lastUpdated}, 'YYYY-MM-DD')
+    </select>
+
+
+</mapper>

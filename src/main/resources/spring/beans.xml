@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:annotation-config/>
+
+    <!--CXF & JSR Bean Validation-->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="validationProviderResolver" class="org.apache.camel.component.bean.validator.HibernateValidationProviderResolver"/> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="beanValidationProvider" class="org.apache.cxf.validation.BeanValidationProvider"> -->
+	<!--         <argument ref="validationProviderResolver"/> -->
+	<!--     </bean> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="commonValidationFeature" class="org.apache.cxf.validation.BeanValidationFeature"> -->
+	<!--         <property name="provider" ref="beanValidationProvider"/> -->
+	<!--     </bean> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+
+    <!--Service Bean-->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="ebs" class="ar.com.newsan.esb.service.EBSService" /> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+    <!--Jackson Object Mapper-->
+	<!-- 	MIGRADO Y ACCESIBLE: NewsanJacksonObjectMapper !! -->
+	<!--     <bean id="mapper" class="com.fasterxml.jackson.databind.ObjectMapper"/> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+    <!--Custom Exception Mappers-->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="customExceptionMapper" class="ar.com.newsan.esb.api.provider.CustomGenericExceptionMapper"/> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="validationExceptionMapper" class="ar.com.newsan.esb.api.provider.CustomValidationExceptionMapper"/> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+    <!--Exception Handler-->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="handler" class="ar.com.newsan.esb.utils.ExceptionHandler"/> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	
+
+    <!--EBS DB Integration Beans (Oracle + MyBatis)-->
+	<!-- 	MIGRADO Y ACCESIBLE: DataConfig.getDataSource() !! -->
+	<!--     <bean id="newsanDatasource" class="oracle.jdbc.pool.OracleDataSource"> -->
+	<!--         <property name="URL" value="${database.oracle.url}"/> -->
+	<!--         <property name="user" value="${database.oracle.username}"/> -->
+	<!--         <property name="password" value="${database.oracle.password}"/> -->
+	<!--     </bean> -->
+	
+	<!--     <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy"> -->
+	<!--         <argument ref="newsanDatasource"/> -->
+	<!--     </bean> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+	<!--     <bean id="customSqlSessionFactoryBuilder" class="ar.com.newsan.esb.mybatis.session.CustomSqlSessionFactoryBuilder" /> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+
+	<!-- 	MIGRADO Y ACCESIBLE: DataConfig.getMybatisConfig() !! -->
+	<!--     <bean id="mybatisConfig" class="org.springframework.core.io.ClassPathResource"> -->
+	<!--         <argument value="${mybatis.config.location}"/> -->
+	<!--         <argument value="${mybatis.config.resource}"/> -->
+	<!--     </bean> -->
+	<!-- 	MIGRADO Y ACCESIBLE !! -->
+
+
+<!--     <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean"> -->
+<!--         <property name="dataSource" ref="dataSource"/> -->
+<!--         custom factory builder -->
+<!--         <property name="sqlSessionFactoryBuilder" ref="customSqlSessionFactoryBuilder" /> -->
+<!--         standard mybatis config file -->
+<!--         <property name="configLocation" ref="mybatisConfig"/> -->
+<!--         externalised mappers -->
+<!--         <property name="mapperLocations"> -->
+<!--             <array value-type="org.springframework.core.io.Resource"> -->
+<!--                 <bean class="org.springframework.core.io.ClassPathResource"> -->
+<!--                     <argument value="${mybatis.config.mapper.order}"/> -->
+<!--                     <argument value="${mybatis.config.resource}"/> -->
+<!--                 </bean> -->
+<!--                 <bean class="org.springframework.core.io.ClassPathResource"> -->
+<!--                     <argument value="${mybatis.config.mapper.product}"/> -->
+<!--                     <argument value="${mybatis.config.resource}"/> -->
+<!--                 </bean> -->
+<!--                 <bean class="org.springframework.core.io.ClassPathResource"> -->
+<!--                     <argument value="${mybatis.config.mapper.customer}"/> -->
+<!--                     <argument value="${mybatis.config.resource}"/> -->
+<!--                 </bean> -->
+<!--                 <bean class="org.springframework.core.io.ClassPathResource"> -->
+<!--                     <argument value="${mybatis.config.mapper.supplier}"/> -->
+<!--                     <argument value="${mybatis.config.resource}"/> -->
+<!--                 </bean> -->
+<!--                 <bean class="org.springframework.core.io.ClassPathResource"> -->
+<!--                     <argument value="${mybatis.config.mapper.reception}"/> -->
+<!--                     <argument value="${mybatis.config.resource}"/> -->
+<!--                 </bean> -->
+<!--             </array> -->
+<!--         </property> -->
+<!--     </bean> -->
+
+<!--     <bean id="sqlSessionFactory" class="ar.com.newsan.esb.mybatis.session.CustomSqlSessionFactory" -->
+<!--           factory-ref="sqlSessionFactoryBean" -->
+<!--           factory-method="getObject"/> -->
+
+<!--     <bean id="mybatis" class="org.apache.camel.component.mybatis.MyBatisComponent"> -->
+<!--         <property name="sqlSessionFactory" ref="sqlSessionFactory"/> -->
+<!--     </bean> -->
+
+</beans>

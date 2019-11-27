@@ -1,0 +1,46 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Supplier">
+
+    <!--Result Data Sets-->
+
+    <resultMap id="ebsSupplier" type="Supplier">
+        <result column="VENDOR_CODE" property="vendorCode"/>
+        <result column="VENDOR_NAME" property="vendorName"/>
+        <result column="VENDOR_ID" property="vendorId"/>
+        <result column="VENDOR_CATEGORY_CODE" property="vendorCategoryCode"/>
+        <result column="VENDOR_CATEGORY" property="vendorCategory"/>
+        <result column="CUIT" property="cuit"/>
+        <result column="POSTAL_CODE" property="postalCode"/>
+        <result column="ADDRESS" property="address"/>
+        <result column="CITY" property="city"/>
+        <result column="PROVINCE_CODE" property="provinceCode"/>
+        <result column="PROVINCE" property="province"/>
+        <result column="OPERATING_UNIT" property="operatingUnit"/>
+        <result column="OPERATING_UNIT_ID" property="operatingUnitId"/>
+        <result column="ADDRESS_INACTIVE_DATE" property="addressInactive"/>
+        <result column="VENDOR_END_DATE_ACTIVE" property="vendorEndActive"/>
+        <result column="PHONE_AREA_CODE" property="phoneAreaCode"/>
+        <result column="PHONE_NUMBER" property="phoneNumber"/>
+        <result column="EMAIL_ADDRESS" property="mail"/>
+        <result column="LAST_UPDATE_DATE" property="lastUpdate"/>
+        <result column="PARTY_SITE_ID" property="partySite"/>
+        <result column="LOCATION_ID" property="locationId"/>
+        <result column="VENDOR_SITE_ID" property="vendorSite"/>
+        <result column="ORGANIZATION_NAME_PHONETIC" property="orgPhonetic"/>
+        <result column="PURCHASING_SITE_FLAG" property="purchaseSite"/>
+        <result column="PAY_SITE_FLAG" property="paySite"/>
+    </resultMap>
+
+    <!--DB Querys-->
+
+    <select id="listSuppliers" parameterType="hashmap" resultMap="ebsSupplier">
+        SELECT * FROM XX_AP_SUPPLIERS_V
+        WHERE VENDOR_CATEGORY = #{category}
+        AND LAST_UPDATE_DATE &gt;= TO_DATE(#{lastUpdated}, 'YYYY-MM-DD')
+    </select>
+
+
+</mapper>
