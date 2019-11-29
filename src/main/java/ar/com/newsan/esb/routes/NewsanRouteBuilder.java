@@ -17,6 +17,7 @@ public class NewsanRouteBuilder extends RouteBuilder {
     public void configure() {
 
     	from("direct:findProductStock")
+    		.routeId("findProductStock")
     		.log("<FIND-PRODUCT-STOCK: Starting...>")
     		.to("bean:ebs?method=requestProductStock")
     		.to("mybatis:Product.findProductStock?statementType=SelectOne")
@@ -31,6 +32,7 @@ public class NewsanRouteBuilder extends RouteBuilder {
 			
 		// ------------------------------------------- // 
 		from("timer:simple?period=5000")
+			.routeId("tester")
 			.log("Testing route!")
 			.process(new Processor() {
 				
