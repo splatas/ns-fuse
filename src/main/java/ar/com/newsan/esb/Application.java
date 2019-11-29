@@ -48,19 +48,6 @@ import ar.com.newsan.esb.utils.ExceptionHandler;
 @EnableAutoConfiguration
 public class Application {
 
-//	private static EBSService ebs;
-//	private static TransactionAwareDataSourceProxy dataSource;
-//	private static CustomGenericExceptionMapper customExceptionMapper;
-//	private static CustomValidationExceptionMapper validationExceptionMapper;
-//	private static ExceptionHandler handler;
-//	private static CustomSqlSessionFactoryBuilder customSqlSessionFactoryBuilder;
-//	private static ObjectMapper mapper;
-//	private static HibernateValidationProviderResolver validationProviderResolver;
-//	private static BeanValidationProvider beanValidationProvider;
-//	private static BeanValidationFeature commonValidationFeature;
-//
-//	private static ClassPathResource mybatisConfig;
-
 	/**
 	 * A main method to start this application.
 	 * 
@@ -71,10 +58,10 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-		return args -> {
-
+//	@Bean
+//	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+//		return args -> {
+//
 //            System.out.println("\nLet's inspect the beans provided by Spring Boot:");
 //
 //            String[] beanNames = ctx.getBeanDefinitionNames();
@@ -95,7 +82,7 @@ public class Application {
 //            commonValidationFeature = (BeanValidationFeature) ctx.getBean("commonValidationFeature");
 //            
 //            mybatisConfig = (ClassPathResource) ctx.getBean("mybatisConfig");
-		};
-	}
+//		};
+//	}
 
 }
