@@ -16,23 +16,23 @@ public class MyRouteBuilder extends RouteBuilder {
      */
     public void configure() {
 
-    	//from("direct:findProductStock")
+    	from("direct:findProductStock")
 	
 	    // JUST FOR TESTING
-			from("timer:simple?period=10000")
-				.process(new Processor() {
-		
-					@Override
-					public void process(Exchange exchange) throws Exception {
-						System.out.println(" MY TESTING PROCESSOR.... STARTS!");
-						
-							exchange.getOut().setHeader("subinventory", "ALGO");
-							exchange.getOut().setHeader("sku", "91LT42DA760");
-							exchange.getOut().setHeader("organization", "SPV");
-						
-						System.out.println(" MY TESTING PROCESSOR.... ENDS!");
-					}
-				})
+		//			from("timer:simple?period=10000")
+		//				.process(new Processor() {
+		//		
+		//					@Override
+		//					public void process(Exchange exchange) throws Exception {
+		//						System.out.println(" MY TESTING PROCESSOR.... STARTS!");
+		//						
+		//							exchange.getOut().setHeader("subinventory", "ALGO");
+		//							exchange.getOut().setHeader("sku", "91LT42DA760");
+		//							exchange.getOut().setHeader("organization", "SPV");
+		//						
+		//						System.out.println(" MY TESTING PROCESSOR.... ENDS!");
+		//					}
+		//				})
 		// JUST FOR TESTING
     		.log("<FIND-PRODUCT-STOCK: Starting...>")
     		.to("bean:ebs?method=requestProductStock")
