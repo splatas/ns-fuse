@@ -17,23 +17,6 @@ public class NewsanRouteBuilder extends RouteBuilder {
     public void configure() {
 
     	from("direct:findProductStock")
-	
-	    // JUST FOR TESTING
-//			from("timer:simple?period=10000")
-//				.process(new Processor() {
-//		
-//					@Override
-//					public void process(Exchange exchange) throws Exception {
-//						System.out.println(" MY TESTING PROCESSOR.... STARTS!");
-//						
-//							exchange.getOut().setHeader("subinventory", "ALGO");
-//							exchange.getOut().setHeader("sku", "91LT42DA760");
-//							exchange.getOut().setHeader("organization", "SPV");
-//						
-//						System.out.println(" MY TESTING PROCESSOR.... ENDS!");
-//					}
-//				})
-		// JUST FOR TESTING
     		.log("<FIND-PRODUCT-STOCK: Starting...>")
     		.to("bean:ebs?method=requestProductStock")
     		.to("mybatis:Product.findProductStock?statementType=SelectOne")
@@ -45,7 +28,29 @@ public class NewsanRouteBuilder extends RouteBuilder {
     		.log("<FIND-PRODUCT-STOCK: End.>")
     		.end();
         
-        
+			
+		// ------------------------------------------- // 
+		from("timer:simple?period=5000")
+			.log("Testing route!")
+			.process(new Processor() {
+				
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
+					
+						exchange.getOut().setHeader("subinventory", "ALGO");
+						exchange.getOut().setHeader("sku", "91LT42DA760");
+						exchange.getOut().setHeader("organization", "SPV");
+					
+					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
+				}
+			})
+			.to("direct:findProductStock")
+			.end();
+		// ------------------------------------------- // 
+		
+//		from("rest:get:hello")
+//		  .transform().constant("Bye World");
     }
 
 }
