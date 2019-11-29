@@ -3,6 +3,8 @@ package ar.com.newsan.esb.routes;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.ProcessorDefinition;
+import org.apache.camel.model.RouteDefinition;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,28 +33,29 @@ public class NewsanRouteBuilder extends RouteBuilder {
         
 			
 		// ------------------------------------------- // 
-		from("timer:simple?period=5000")
-			.routeId("tester")
-			.log("Testing route!")
-			.process(new Processor() {
-				
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
-					
-						exchange.getOut().setHeader("subinventory", "ALGO");
-						exchange.getOut().setHeader("sku", "91LT42DA760");
-						exchange.getOut().setHeader("organization", "SPV");
-					
-					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
-				}
-			})
-			.to("direct:findProductStock")
-			.end();
+//		from("timer:simple?period=5000")
+//			.routeId("tester")
+//			.log("Testing route!")
+//			.process(new Processor() {
+//				
+//				@Override
+//				public void process(Exchange exchange) throws Exception {
+//					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
+//					
+//						exchange.getOut().setHeader("subinventory", "ALGO");
+//						exchange.getOut().setHeader("sku", "91LT42DA760");
+//						exchange.getOut().setHeader("organization", "SPV");
+//					
+//					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
+//				}
+//			})
+//			.to("direct:findProductStock")
+//			.end();
 		// ------------------------------------------- // 
 		
 //		from("rest:get:hello")
 //		  .transform().constant("Bye World");
+    	
     }
 
 }
