@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.apache.camel.component.mybatis.MyBatisComponent;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,9 @@ import oracle.jdbc.pool.OracleDataSource;
 @Configuration
 public class DataConfig {
 	
+	@Value("${database.oracle.url}")
+	private String datasourceURL;
+	
 	@Bean(name = "dataSource")
 	public TransactionAwareDataSourceProxy getDataSource() throws SQLException {
 
@@ -32,7 +36,10 @@ public class DataConfig {
 		//Datos obtenidos de 'ar.com.newsan.properties'
 		//
 		//newsanDatasource.setURL("${database.oracle.url}");
-		newsanDatasource.setURL("jdbc:oracle:thin:@arrpedb11.newsan.com.ar:1521:PROD");
+		//newsanDatasource.setURL("jdbc:oracle:thin:@arrpedb11.newsan.com.ar:1521:PROD");
+		newsanDatasource.setURL(datasourceURL);
+		
+		
 		//newsanDatasource.setUser("${database.oracle.username}");
 		newsanDatasource.setUser("apps");
 		//newsanDatasource.setPassword("${database.oracle.password}");
