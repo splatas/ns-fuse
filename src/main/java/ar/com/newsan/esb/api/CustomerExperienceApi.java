@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ar.com.newsan.esb.routes.NewsanRouteBuilder;
+import ar.com.newsan.esb.security.JWTSecured;
 import ar.com.newsan.esb.utils.StandardResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -41,7 +42,7 @@ public class CustomerExperienceApi {
                                              @PathParam("sku") @ApiParam("pass a product sku for looking up specific product") String sku) {
         LOG.info("[CustomerExperienceApi.findProductStock]: starts with: sku=" + sku  + ", organization= " + organization + ", subinventory=" + subinventory);
 
-        routeBuilder.getRouteCollection().
+        //routeBuilder.getRouteCollection().
         
     	return StandardResponse.ok("findProductStock");
     }
