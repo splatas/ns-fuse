@@ -33,24 +33,24 @@ public class NewsanRouteBuilder extends RouteBuilder {
         
 			
 		// ------------------------------------------- // 
-//		from("timer:simple?period=5000")
-//			.routeId("tester")
-//			.log("Testing route!")
-//			.process(new Processor() {
-//				
-//				@Override
-//				public void process(Exchange exchange) throws Exception {
-//					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
-//					
-//						exchange.getOut().setHeader("subinventory", "ALGO");
-//						exchange.getOut().setHeader("sku", "91LT42DA760");
-//						exchange.getOut().setHeader("organization", "SPV");
-//					
-//					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
-//				}
-//			})
-//			.to("direct:findProductStock")
-//			.end();
+		from("timer:simple?period=5000")
+			.routeId("tester")
+			.log("Testing route!")
+			.process(new Processor() {
+				
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
+					
+						exchange.getOut().setHeader("subinventory", "ALGO");
+						exchange.getOut().setHeader("sku", "91LT42DA760");
+						exchange.getOut().setHeader("organization", "SPV");
+					
+					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
+				}
+			})
+			.to("direct:findProductStock")
+			.end();
 		// ------------------------------------------- // 
 		
 //		from("rest:get:hello")
