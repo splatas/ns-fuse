@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -20,31 +21,22 @@ import ar.com.newsan.esb.mybatis.session.CustomSqlSessionFactoryBuilder;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
+@PropertySource("classpath:spring/stocks.properties")
 public class DataConfig {
 	
-	@Value("${database.oracle.url}")
-	private String datasourceURL;
 	
 	@Bean(name = "dataSource")
 	public TransactionAwareDataSourceProxy getDataSource() throws SQLException {
 
-		OracleDataSource newsanDatasource = new OracleDataSource();
-		
-//		ClassPathResource propertiesFile = new ClassPathResource("ar.com.newsan.properties", NewsanResource.class);
-		
-		//
-		//Datos obtenidos de 'ar.com.newsan.properties'
-		//
-		//newsanDatasource.setURL("${database.oracle.url}");
-		//newsanDatasource.setURL("jdbc:oracle:thin:@arrpedb11.newsan.com.ar:1521:PROD");
-		newsanDatasource.setURL(datasourceURL);
-		
-		
-		//newsanDatasource.setUser("${database.oracle.username}");
-		newsanDatasource.setUser("apps");
-		//newsanDatasource.setPassword("${database.oracle.password}");
-		newsanDatasource.setPassword("appsvvkit");
+		String datasourceURL = System.getenv("database.oracle.url");
+		String datasourceUser = System.getenv("database.oracle.username");
+		String datasourcePassword = System.getenv("database.oracle.password");
 
+		OracleDataSource newsanDatasource = new OracleDataSource();
+		newsanDatasource.setURL(datasourceURL);
+		newsanDatasource.setUser(datasourceUser);
+		newsanDatasource.setPassword(datasourcePassword);
+		
 		TransactionAwareDataSourceProxy dsProxy = new TransactionAwareDataSourceProxy();
 		dsProxy.setTargetDataSource(newsanDatasource);
 
