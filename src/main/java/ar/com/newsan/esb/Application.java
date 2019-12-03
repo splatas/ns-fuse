@@ -43,7 +43,6 @@ import ar.com.newsan.esb.utils.ExceptionHandler;
 @SpringBootApplication
 // load regular Spring XML file from the classpath that contains the Camel XML DSL
 @ImportResource({ "classpath:spring/camel-context.xml", "classpath:spring/beans.xml"
-//				, "classpath:ar/com/newsan/esb/mybatis/SqlMapConfig.xml" 
 })
 @EnableAutoConfiguration
 public class Application {
@@ -57,32 +56,5 @@ public class Application {
 
 		SpringApplication.run(Application.class, args);
 	}
-
-//	@Bean
-//	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-//		return args -> {
-//
-//            System.out.println("\nLet's inspect the beans provided by Spring Boot:");
-//
-//            String[] beanNames = ctx.getBeanDefinitionNames();
-//            Arrays.sort(beanNames);
-//            for (String beanName : beanNames) {
-//                System.out.println("\tbeanName = " + beanName);
-//            }
-//
-//            ebs = (EBSService) ctx.getBean("ebs");
-//            dataSource = (TransactionAwareDataSourceProxy) ctx.getBean("dataSource");
-//            customExceptionMapper = (CustomGenericExceptionMapper) ctx.getBean("customExceptionMapper");
-//            validationExceptionMapper = (CustomValidationExceptionMapper) ctx.getBean("validationExceptionMapper");
-//            handler =  (ExceptionHandler) ctx.getBean("handler");
-//            customSqlSessionFactoryBuilder= (CustomSqlSessionFactoryBuilder) ctx.getBean("customSqlSessionFactoryBuilder");
-//            mapper = (ObjectMapper) ctx.getBean("mapper");
-//            validationProviderResolver = (HibernateValidationProviderResolver) ctx.getBean("validationProviderResolver");
-//            beanValidationProvider = (BeanValidationProvider) ctx.getBean("beanValidationProvider");
-//            commonValidationFeature = (BeanValidationFeature) ctx.getBean("commonValidationFeature");
-//            
-//            mybatisConfig = (ClassPathResource) ctx.getBean("mybatisConfig");
-//		};
-//	}
 
 }
