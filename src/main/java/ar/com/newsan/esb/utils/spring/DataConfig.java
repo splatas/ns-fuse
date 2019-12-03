@@ -20,7 +20,6 @@ import ar.com.newsan.esb.mybatis.session.CustomSqlSessionFactoryBuilder;
 import oracle.jdbc.pool.OracleDataSource;
 
 @Configuration
-@PropertySource("classpath:spring/stocks.properties")
 public class DataConfig {
 	
 	
