@@ -3,8 +3,6 @@ package ar.com.newsan.esb.routes;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.ProcessorDefinition;
-import org.apache.camel.model.RouteDefinition;
 import org.springframework.stereotype.Component;
 
 /**
