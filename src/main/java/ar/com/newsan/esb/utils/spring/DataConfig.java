@@ -6,7 +6,6 @@ import javax.sql.DataSource;
 
 import org.apache.camel.component.mybatis.MyBatisComponent;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +45,6 @@ public class DataConfig {
 	@Bean(name = "mybatisConfig")
 	public ClassPathResource getMybatisConfig() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/SqlMapConfig.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mybatisConfig = new ClassPathResource("SqlMapConfig.xml", NewsanResource.class);
 													   
 		return mybatisConfig;
@@ -84,28 +81,13 @@ public class DataConfig {
 		Resource customer = (ClassPathResource) ctx.getBean("mapperCustomer");
 		Resource supplier = (ClassPathResource) ctx.getBean("mapperSupplier");
 		
-		//
-		//Resource reception = (ClassPathResource) ctx.getBean("mapperReception");
-		// Al inyectar este object tira:
-		//
-		// org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactoryBean' defined in class path resource [ar/com/newsan/esb/utils/spring/DataConfig.class]: 
-		// Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'class path resource [ar/com/newsan/esb/mybatis/Reception.xml]'; 
-		//nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: org.apache.ibatis.builder.BuilderException: Error resolving class. Cause: 
-		//org.apache.ibatis.type.TypeException: Could not resolve type alias 'ReceptionTransaction'.  Cause: java.lang.ClassNotFoundException: 
-		//Cannot find class: ReceptionTransaction
-		
 		Resource[] mapperLocations = {order, product, customer, supplier};
-		
-//		System.out.println("..........mapperLocations => \n" + mapperLocations[0].toString() + ",  \n" + mapperLocations[1].toString()+ ",  \n"+ mapperLocations[2].toString()
-//				+ ",  \n" + mapperLocations[3].toString() + ",  \n"  );
 		return mapperLocations;
 	}
 	
 	@Bean(name = "mapperOrder")
 	public ClassPathResource getMapperOrder() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Order.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mapperOrder = new ClassPathResource("Order.xml", NewsanResource.class);
 													   
 		return mapperOrder;
@@ -114,8 +96,6 @@ public class DataConfig {
 	@Bean(name = "mapperProduct")
 	public ClassPathResource getMapperProduct() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Product.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mapperProduct = new ClassPathResource("Product.xml", NewsanResource.class);
 													   
 		return mapperProduct;
@@ -124,8 +104,6 @@ public class DataConfig {
 	@Bean(name = "mapperCustomer")
 	public ClassPathResource getMapperCustomer() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Customer.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mapperCustomer = new ClassPathResource("Customer.xml", NewsanResource.class);
 													   
 		return mapperCustomer;
@@ -134,8 +112,6 @@ public class DataConfig {
 	@Bean(name = "mapperSupplier")
 	public ClassPathResource getMapperSupplier() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Supplier.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mapperSupplier = new ClassPathResource("Supplier.xml", NewsanResource.class);
 													   
 		return mapperSupplier;
@@ -144,8 +120,6 @@ public class DataConfig {
 	@Bean(name = "mapperReception")
 	public ClassPathResource getMapperReception() {
 		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Reception.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
 		ClassPathResource mapperReception = new ClassPathResource("Reception.xml", NewsanResource.class);
 													   
 		return mapperReception;
@@ -165,10 +139,6 @@ public class DataConfig {
 	
 	@Bean(name = "configuration")
 	public org.apache.ibatis.session.Configuration getConfiguration(ApplicationContext ctx) throws InstantiationException, IllegalAccessException {
-		
-		//"${mybatis.config.location} => ar/com/newsan/esb/mybatis/Reception.xml"
-		//"${mybatis.config.resource} => ar.com.newsan.esb.mybatis.NewsanResource"
-		//ClassPathResource configFile = new ClassPathResource("configuration.xml", NewsanResource.class);
 		
 		CustomSqlSessionFactory bean = (CustomSqlSessionFactory)ctx.getBean("sqlSessionFactoryBean"); 
 		org.apache.ibatis.session.Configuration configuration = bean.getConfiguration();
