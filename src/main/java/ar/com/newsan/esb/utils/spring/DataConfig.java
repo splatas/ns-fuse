@@ -5,11 +5,12 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.apache.camel.component.mybatis.MyBatisComponent;
+import org.apache.camel.component.servlet.CamelHttpTransportServlet;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -22,6 +23,14 @@ import oracle.jdbc.pool.OracleDataSource;
 @Configuration
 public class DataConfig {
 	
+	@Bean(name = "camelServlet")
+	public ServletRegistrationBean camelServletRegistrationBean() {
+		
+		ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(), "/stocks/*");
+		registration.setName("CamelServlet");
+
+		return registration;
+	}
 	
 	@Bean(name = "dataSource")
 	public TransactionAwareDataSourceProxy getDataSource() throws SQLException {
