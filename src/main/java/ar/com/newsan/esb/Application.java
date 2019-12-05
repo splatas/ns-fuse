@@ -17,28 +17,11 @@
 package ar.com.newsan.esb;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 
-import org.apache.camel.component.bean.validator.HibernateValidationProviderResolver;
-import org.apache.cxf.validation.BeanValidationFeature;
-import org.apache.cxf.validation.BeanValidationProvider;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ar.com.newsan.esb.api.provider.CustomGenericExceptionMapper;
-import ar.com.newsan.esb.api.provider.CustomValidationExceptionMapper;
-import ar.com.newsan.esb.mybatis.session.CustomSqlSessionFactoryBuilder;
-import ar.com.newsan.esb.service.EBSService;
-import ar.com.newsan.esb.utils.ExceptionHandler;
 
 @SpringBootApplication
 // load regular Spring XML file from the classpath that contains the Camel XML DSL
