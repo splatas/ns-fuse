@@ -22,16 +22,17 @@ public class NewsanRouteBuilder extends RouteBuilder {
 	        .bindingMode(RestBindingMode.json);
 	    	
     	
+    	// Expose rest service
 	    from("servlet:/product/{sku}/stock?")
 	    	.routeId("productStockRest")
 	    	//.to("bean-validator://x?group=ar.com.newsan.esb.routes.RestBeanValidator")
 	    	.log("entró por productStockRestService")
 	    	.process(restProcessor)
 	    	.to("direct:findProductStock")
-	    	.setHeader(Exchange.CONTENT_TYPE, constant(javax.ws.rs.core.MediaType.APPLICATION_JSON))
 	    	.end();
 	
-    	from("direct:findProductStock")
+    	// Route findProductStock
+	    from("direct:findProductStock")
     		.routeId("findProductStock")
     		.log("<FIND-PRODUCT-STOCK: Starting...>")
     		.to("bean:ebs?method=requestProductStock")
@@ -42,7 +43,6 @@ public class NewsanRouteBuilder extends RouteBuilder {
     				.simple("${body.reqStatus} != 'S'")
     					.setBody().simple(null)
     		.log("<FIND-PRODUCT-STOCK: End.>")
-    		.setHeader(Exchange.CONTENT_TYPE, constant(javax.ws.rs.core.MediaType.APPLICATION_JSON))
     		.end();
 		
     }
