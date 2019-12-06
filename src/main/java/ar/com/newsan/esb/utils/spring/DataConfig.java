@@ -26,7 +26,7 @@ public class DataConfig {
 	@Bean(name = "camelServlet")
 	public ServletRegistrationBean camelServletRegistrationBean() {
 		
-		ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(), "/stocks/*");
+		ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(), "/stocks-service/*");
 		registration.setName("CamelServlet");
 
 		return registration;
