@@ -1,8 +1,9 @@
 package ar.com.newsan.esb.routes;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,11 +12,25 @@ import org.springframework.stereotype.Component;
 @Component(value = "newsanRouteBuilder")
 public class NewsanRouteBuilder extends RouteBuilder {
 
-    /**
-     * Let's configure the Camel routing rules using Java code...
-     */
-    public void configure() {
+	@Autowired
+	RestServiceProcessor restProcessor;
 
+    public void configure() {
+    	
+    	restConfiguration()
+	        .component("servlet")
+	        .bindingMode(RestBindingMode.json);
+	    	
+    	
+	    from("servlet:/product/{sku}/stock?")
+	    	.routeId("productStockRest")
+	    	//.to("bean-validator://x?group=ar.com.newsan.esb.routes.RestBeanValidator")
+	    	.log("entró por productStockRestService")
+	    	.process(restProcessor)
+	    	.to("direct:findProductStock")
+	    	.setHeader(Exchange.CONTENT_TYPE, constant(javax.ws.rs.core.MediaType.APPLICATION_JSON))
+	    	.end();
+	
     	from("direct:findProductStock")
     		.routeId("findProductStock")
     		.log("<FIND-PRODUCT-STOCK: Starting...>")
@@ -27,33 +42,9 @@ public class NewsanRouteBuilder extends RouteBuilder {
     				.simple("${body.reqStatus} != 'S'")
     					.setBody().simple(null)
     		.log("<FIND-PRODUCT-STOCK: End.>")
+    		.setHeader(Exchange.CONTENT_TYPE, constant(javax.ws.rs.core.MediaType.APPLICATION_JSON))
     		.end();
-        
-			
-		// ------------------------------------------- // 
-		from("timer:simple?period=5000")
-			.routeId("tester")
-			.log("Testing route!")
-			.process(new Processor() {
-				
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					System.out.println(" MY TESTING PROCESSOR.... STARTS!");
-					
-						exchange.getOut().setHeader("subinventory", "ALGO");
-						exchange.getOut().setHeader("sku", "91LT42DA760");
-						exchange.getOut().setHeader("organization", "SPV");
-					
-					System.out.println(" MY TESTING PROCESSOR.... ENDS!");
-				}
-			})
-			.to("direct:findProductStock")
-			.end();
-		// ------------------------------------------- // 
 		
-//		from("rest:get:hello")
-//		  .transform().constant("Bye World");
-    	
     }
 
 }
