@@ -56,47 +56,15 @@ public class EBSService {
 
     public void requestProductStock(Exchange exchange) throws Exception {
     	LOG.info("[EBSService.requestProductStock]: starting... ");
-
         String subinventory = exchange.getIn().getHeader("subinventory", String.class);
- LOG.info("Parametros recibidos: subinventory=" + subinventory);
 
         // Get sku id and inventory id from Oracle EBS
         ProductStock stock = getIdsByCode(exchange);
         stock.setSubInventory(subinventory);
 
-        LOG.info(String.format("[FIND PRODUCT STOCK] SKU: %s, Organization: %s, Subinventory: %s",
-                stock.getInventory(), stock.getOrganization(), subinventory));
-
-        
         LOG.info("[EBSService.requestProductStock]: ends setting out's boyd with stock= " + stock);
         exchange.getOut().setBody(stock);
     }
-
-//    public void requestCreateOrder(Exchange exchange) throws Exception {
-//
-//        ProducerTemplate template = exchange.getContext().createProducerTemplate();
-//        ApiOrder inOrderHeader = exchange.getIn().getBody(ApiOrder.class);
-//
-//        Map<String, Object> bodyMap = new HashMap<>();
-//        bodyMap.put("in_header", inOrderHeader);
-//        bodyMap.put("in_lines", inOrderHeader.getLines());
-//
-//        // Response fields
-//        bodyMap.put("out_status", null);
-//        bodyMap.put("out_msg_count", 0);
-//        bodyMap.put("out_msg_data", null);
-//        bodyMap.put("out_header", new OrderHeaderOut());
-//        bodyMap.put("out_lines", new ArrayList<OrderLineOut>());
-//
-//        // Calculated fields
-//        Integer custBillTo = template.requestBody("mybatis:Order.getCustomerSiteId?statementType=SelectOne", inOrderHeader.getClientBillRef(), Integer.class);
-//        Integer custShipTo = template.requestBody("mybatis:Order.getCustomerSiteId?statementType=SelectOne", inOrderHeader.getClientShipRef(), Integer.class);
-//        if (custBillTo == null || custShipTo == null) throw new PersistenceException("Required customer id not found");
-//        bodyMap.put("custBillTo", custBillTo);
-//        bodyMap.put("custShipTo", custShipTo);
-//
-//        exchange.getOut().setBody(bodyMap);
-//    }
 
     public void requestGetOrder(Exchange exchange) throws Exception {
 
@@ -107,56 +75,6 @@ public class EBSService {
         exchange.getOut().setBody(bodyMap);
     }
 
-//    public void requestCreateReception(Exchange exchange) {
-//
-//        // Retrieve original input body
-//        ApiReception input = exchange.getIn().getBody(ApiReception.class);
-//
-//        Map<String, Object> bodyMap = new HashMap<>();
-//        // Add original input body
-//        bodyMap.put("reception", input);
-//        // Header & group sequence values
-//        bodyMap.put("headerInterface", getSeqNextVal(exchange, "RCV_HEADERS_INTERFACE_S"));
-//        BigDecimal groupId = getSeqNextVal(exchange, "RCV_INTERFACE_GROUPS_S");
-//        bodyMap.put("groupId", groupId);
-//        // Add field to fill out response
-//        bodyMap.put("out", new POReception(groupId));
-//
-//        exchange.getOut().setBody(bodyMap);
-//    }
-
-//    public void retrievePurchaseOrderData(ApiReceptionTransaction inputTransaction, Exchange exchange) { /* Find PO data for every transaction */
-//
-//        ProducerTemplate template = exchange.getContext().createProducerTemplate();
-//        Map<String, Object> body = (Map<String, Object>) exchange.getIn().getHeader("API_PARAMS");
-//
-//        // Current transaction
-//        body.put("transaction", inputTransaction);
-//        // Current transaction sequence value
-//        body.put("transactionInterface", getSeqNextVal(exchange, "RCV_TRANSACTIONS_INTERFACE_S"));
-//
-//        // HeaderId and Currency
-//        Map<String, Object> header = template.requestBody("mybatis:Reception.getHeaderData?statementType=SelectOne", inputTransaction, Map.class);
-//        if(header == null || anyNull(header)) throw new PersistenceException("Required reception header not found");
-//        body.put("poHeader", header.get("ID"));
-//        body.put("poCurrency", header.get("CURRENCY"));
-//
-//        // ItemId
-//        Long poItem = template.requestBody("mybatis:Reception.getItemId?statementType=SelectOne", inputTransaction, Long.class);
-//        if (poItem == null) throw new PersistenceException("Required reception item not found");
-//        body.put("poItem", poItem);
-//
-//        // LineId
-//        Long poLine = template.requestBody("mybatis:Reception.getLineId?statementType=SelectOne", body, Long.class);
-//        if(poLine == null) throw new PersistenceException("Required reception line not found");
-//        body.put("poLine", poLine);
-//
-//        // LineLocationId and ShipToOrgId
-//        Map<String, Object> lineLocation = template.requestBody("mybatis:Reception.getLineLocationData?statementType=SelectOne", body, Map.class);
-//        if(lineLocation == null || anyNull(lineLocation)) throw new PersistenceException("Required reception line location not found");
-//        body.put("poLineLocation", lineLocation.get("LOCATION"));
-//        body.put("poOrg", lineLocation.get("ORG"));
-//    }
 
     //Utils
 
@@ -193,10 +111,7 @@ public class EBSService {
 
         ProducerTemplate template = exchange.getContext().createProducerTemplate();
         
-        
-        
-LOG.info("PARÁMETROS RECIBIDOS: sku=" + inputParams.get("sku") + ", organization=" + inputParams.get("org"));
-        
+        LOG.info("PARÁMETROS RECIBIDOS: sku=" + inputParams.get("sku") + ", organization=" + inputParams.get("org"));
         return template.requestBody("mybatis:Product.getIds?statementType=SelectOne", inputParams, ProductStock.class);
     }
 
