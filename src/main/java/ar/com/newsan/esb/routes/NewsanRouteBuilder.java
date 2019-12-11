@@ -14,6 +14,8 @@ public class NewsanRouteBuilder extends RouteBuilder {
 
 	@Autowired
 	RestServiceProcessor restProcessor;
+	@Autowired
+	RestBeanValidator beanValidator;
 
     public void configure() {
     	
@@ -25,8 +27,9 @@ public class NewsanRouteBuilder extends RouteBuilder {
     	// Expose rest service
 	    from("servlet:/product/{sku}/stock?")
 	    	.routeId("productStockRest")
-	    	//.to("bean-validator://x?group=ar.com.newsan.esb.routes.RestBeanValidator")
 	    	.log("entró por productStockRestService")
+	    	.to("bean-validator://x")
+	    	.process(beanValidator)
 	    	.process(restProcessor)
 	    	.to("direct:findProductStock")
 	    	.end();
