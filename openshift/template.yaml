@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: stock-service-template
   annotations:
-    openshift.io/display-name: Newsan Customer Experience
+    openshift.io/display-name: Newsan Stock Service
     iconClass: fa fa-code
 objects:
 - apiVersion: v1
