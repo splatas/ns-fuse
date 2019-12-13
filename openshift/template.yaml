@@ -66,6 +66,22 @@ objects:
           ports:
           - containerPort: 8181
             protocol: TCP
+          env:
+            - name: database.oracle.username
+              valueFrom:
+                secretKeyRef:
+                  name: ns-stocks-datasource
+                  key: username
+            - name: database.oracle.password
+              valueFrom:
+                secretKeyRef:
+                  name: ns-stocks-datasource
+                  key: password
+            - name: database.oracle.url
+              valueFrom:
+                configMapKeyRef:
+                  name: ns-stock-datasource
+                  key: ns-stock-datasource.url
     triggers: 
     - imageChangeParams:
         automatic: true
