@@ -53,6 +53,10 @@ objects:
           app: ${APP_NAME}
           deploymentconfig: ${APP_NAME}
       spec:
+        volumes:
+        - name: config-volume
+          configMap:
+            name: ns-stocks-logback
         containers:
         - image: ${APP_NAME}:latest
           name: stock-service
@@ -66,6 +70,9 @@ objects:
           ports:
           - containerPort: 8181
             protocol: TCP
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/configuration
           env:
             - name: database.oracle.username
               valueFrom:
@@ -82,6 +89,8 @@ objects:
                 configMapKeyRef:
                   name: ns-stock-datasource
                   key: ns-stock-datasource.url
+            - name: logging.config
+              value: /opt/configuration/logback.xml
     triggers: 
     - imageChangeParams:
         automatic: true
