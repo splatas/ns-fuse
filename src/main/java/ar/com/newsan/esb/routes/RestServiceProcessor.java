@@ -19,10 +19,14 @@ public class RestServiceProcessor implements Processor {
 		// org.apache.camel.RuntimeCamelException: java.io.IOException: UT010029: Stream is closed
 		exchange.getOut().setBody(false);
 		
-		exchange.getOut().setHeader("sku", skuParam);		
-		exchange.getOut().setHeader("subinventory", subinventoryParam);
-		exchange.getOut().setHeader("organization", organizationParam);
-
+		//  Bean validation
+		RequestStockDTO request = new RequestStockDTO();
+		request.setSkuParam(skuParam);
+		request.setOrganizationParam(organizationParam);
+		request.setSubinventoryParam(subinventoryParam);
+		
+		exchange.getOut().setBody(request);
+		
 	}
 
 }

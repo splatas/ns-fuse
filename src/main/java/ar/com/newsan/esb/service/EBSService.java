@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import ar.com.newsan.esb.model.ProductStock;
+import ar.com.newsan.esb.routes.RequestStockDTO;
 import ar.com.newsan.esb.utils.StandardResponse;
 
 /**
@@ -55,12 +56,13 @@ public class EBSService {
     }
 
     public void requestProductStock(Exchange exchange) throws Exception {
+
     	LOG.info("[EBSService.requestProductStock]: starting... ");
-        String subinventory = exchange.getIn().getHeader("subinventory", String.class);
+    	RequestStockDTO body = exchange.getIn().getBody(RequestStockDTO.class);
 
         // Get sku id and inventory id from Oracle EBS
-        ProductStock stock = getIdsByCode(exchange);
-        stock.setSubInventory(subinventory);
+        ProductStock stock = getIdsByCode(exchange, body);
+        stock.setSubInventory(body.getSubinventoryParam());
 
         LOG.info("[EBSService.requestProductStock]: ends setting out's boyd with stock= " + stock);
         exchange.getOut().setBody(stock);
@@ -103,41 +105,16 @@ public class EBSService {
         return StandardResponse.ok(operation, body);
     }
 
-    private ProductStock getIdsByCode(Exchange exchange) {
+    private ProductStock getIdsByCode(Exchange exchange, RequestStockDTO request) {
 
         Map<String, String> inputParams = new HashMap<>();
-        inputParams.put("sku", exchange.getIn().getHeader("sku", String.class));
-        inputParams.put("org", exchange.getIn().getHeader("organization", String.class));
+        inputParams.put("sku", request.getSkuParam());
+        inputParams.put("org", request.getOrganizationParam());
 
         ProducerTemplate template = exchange.getContext().createProducerTemplate();
         
         LOG.info("PARÁMETROS RECIBIDOS: sku=" + inputParams.get("sku") + ", organization=" + inputParams.get("org"));
         return template.requestBody("mybatis:Product.getIds?statementType=SelectOne", inputParams, ProductStock.class);
-    }
-
-    private Boolean anyNull(Map<String, Object> param) {
-
-        if (param==null) return false;
-
-        Boolean anyNull = false;
-
-        for (Object value : param.values()){
-
-            if(value == null) {
-                anyNull = true;
-                break;
-            }
-        }
-
-        return anyNull;
-    }
-
-    private BigDecimal getSeqNextVal(Exchange exchange, String sequenceName) {
-
-        ProducerTemplate template = exchange.getContext().createProducerTemplate();
-        BigDecimal seqValue = template.requestBody("mybatis:Reception.sequenceId?statementType=SelectOne", sequenceName, BigDecimal.class);
-        if(seqValue == null) throw new PersistenceException("Required reception sequence value not found");
-        return seqValue;
     }
 
 }
